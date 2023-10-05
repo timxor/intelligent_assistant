@@ -12,4 +12,7 @@ nodemon server.js
 http://localhost:3000/
 ```
 
+![image.png](image.png)
+
+
 
