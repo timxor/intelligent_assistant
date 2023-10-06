@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Recording</title>
+</head>
+
+<body>
+  <button onclick="startRecording()">Ask</button>
+  <button onclick="stopRecording()">Stop</button>
+
+  <script>
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    const handleDataAvailable = (event) => {
+      if (event.data.size > 0) {
+        recordedChunks.push(event.data);
+      }
+    };
+
+    const saveRecording = () => {
+      const blob = new Blob(recordedChunks, {
+        type: 'audio/webm'
+      });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'recording.webm';
+      a.click();
+    };
+
+    const startRecording = () => {
+      navigator.mediaDevices.getUserMedia({
+        audio: true
+      }).then(stream => {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = handleDataAvailable;
+        mediaRecorder.start();
+      });
+    };
+
+    const stopRecording = () => {
+      mediaRecorder.stop();
+      mediaRecorder.onstop = () => {
+        saveRecording();
+      };
+    };
+  </script>
+</body>
+
+</html>
